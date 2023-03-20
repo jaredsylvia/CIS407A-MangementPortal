@@ -7,6 +7,9 @@
 // *PTO and other accruable benefits. Is FMLA HIPAA?
 
 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace ManagementPortal.Models
 {
     public class Employee
@@ -18,28 +21,32 @@ namespace ManagementPortal.Models
         private string title;
         private decimal payRate;
         private string hours;
+        private string deptId;
+        private Department department;
 
 
         //constructors
         public Employee()
         {
-            id = 0;
+            id = 1;
             name = "John Doe";
             startDate = DateTime.Now;
             title = "Junior Employee";
             payRate = 15.00m; 
             hours = "40:00";
+            deptId = "00";
+            department = new Department();
 
         }
 
-        public Employee(int id, string name, DateTime startDate, string title, decimal payRate, string hours)
+        public Employee(int id, string name, DateTime startDate, string title, decimal payRate, string hours, string deptId, Department department)
         {
             this.id = id;
             this.name = name;
             this.startDate = startDate;
             this.title = title;
             this.payRate = payRate;
-            if (hours.Contains(".")) //RegEx comparison should replace this, is used in setter also - should be refactored
+            if (hours.Contains('.')) //RegEx comparison should replace this, is used in setter also - should be refactored
             {
                 float hoursFloat = float.Parse(hours, System.Globalization.CultureInfo.InvariantCulture);
                 TimeSpan hTimeSpan = TimeSpan.FromHours(hoursFloat);
@@ -48,6 +55,8 @@ namespace ManagementPortal.Models
             {
                 this.hours = hours;
             }
+            this.deptId = deptId;
+            this.department = department;
         }
 
         //behaviors
@@ -55,7 +64,7 @@ namespace ManagementPortal.Models
         public decimal CalculatePay()
         {
             string[] h;
-            decimal decHours;
+            decimal decHours; //decHours should be refactored and return a decimal of hours worked.
             try
             {
                 h = this.hours.Split(new string[] { ":" }, StringSplitOptions.None);
@@ -63,7 +72,7 @@ namespace ManagementPortal.Models
             }
             catch (NullReferenceException)
             {
-                h = new string[] { "0", "0" };
+                h = new string[] { "0", "0" }; 
             }
             try
             {
@@ -88,6 +97,7 @@ namespace ManagementPortal.Models
 
 
         //getters and setters
+        [Key]
         public int Id { get { return id; } set { id = value; } }
         public string Name { get { return name; } set { name = value; } }
         public DateTime StartDate { get { return startDate; } set { startDate = value; } }
@@ -97,7 +107,7 @@ namespace ManagementPortal.Models
             get { return hours; } 
             set
             { //RegEx comparison should replace this, is used in constructor also - should be refactored
-                if (value.Contains("."))
+                if (value.Contains('.'))
                 {
                     float hoursFloat = float.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
                     TimeSpan hTimeSpan = TimeSpan.FromHours(hoursFloat);
@@ -109,5 +119,10 @@ namespace ManagementPortal.Models
                 }
             } 
         }
+
+        [ForeignKey("Department")]
+        public string DepartmentId { get { return deptId; } set { deptId = value; } }  //foreign key
+        [NotMapped]
+        public Department Department { get { return department; } set { department = value; } } // Department object
     }
 }

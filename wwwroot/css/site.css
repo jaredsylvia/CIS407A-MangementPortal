@@ -17,3 +17,11 @@ body {
   margin-bottom: 60px;
 }
 
+#empTable tr th:nth-child(1), #empTable tr td:nth-child(1){
+    display: none;
+}
+
+#empTable td {
+    height: 50px;
+    vertical-align: middle;
+}

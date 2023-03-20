@@ -1,0 +1,43 @@
+﻿@model List<Employee>
+@{
+    ViewBag.Title = "Employee List";
+}
+
+<h2>Employee List</h2>
+<a asp-controller="Employee" asp-action="Add">Add New Employee</a>
+<table class="table table-bordered table-striped" id="empTable">
+    <thead>
+        <tr>
+            <th id="empIds">Employee ID</th>
+        <th>Name</th>
+        <th>Title</th>
+        <th>Start Date</th>
+        <th>Pay Rate</th>
+        <th>Hours</th>
+        <th>Department ID</th>
+        <th>Department Name</th>
+        <th></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var emp in Model)
+        {
+        <tr>
+            <td id="@emp.Id">@emp.Id</td>
+            <td>@emp.Name</td>
+            <td>@emp.Title</td>
+            <td>@emp.StartDate.ToString()</td>
+            <td>@emp.PayRate</td>
+            <td>@emp.Hours</td>
+            <td>@emp.DepartmentId</td>
+            <td>@emp.Department.DepartmentName</td>
+            <td>
+                <a asp-controller="Employee" asp-action="Edit"
+                   asp-route-id="@emp.Id">Edit(ASP)</a>
+                   <a href="#" onclick="editEmployee(this)">Edit(JS)</a>
+                <a asp-controller="Employee" asp-action="Delete"
+                   asp-route-id="@emp.Id">Delete</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
