@@ -28,7 +28,7 @@ namespace ManagementPortal.Models
         //constructors
         public Employee()
         {
-            id = 1;
+            id = 0;
             name = "John Doe";
             startDate = DateTime.Now;
             title = "Junior Employee";

@@ -13,7 +13,6 @@ namespace ManagementPortal.Controllers
         {
             context = ctx;
         }
-
         public IActionResult Index()
         {
             var departments = context.Departments.ToList(); 
@@ -52,6 +51,66 @@ namespace ManagementPortal.Controllers
                 ViewBag.EmpTitle = "No Employee Selected";
             }
             return View(model);
+        }
+
+        public IActionResult Add()
+        {
+            ViewBag.Action = "Add";
+
+            ViewBag.Departments = context.Departments.OrderBy(d => d.DepartmentName).ToList();
+            return View("Edit", new Employee());
+        }
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            ViewBag.Action = "Edit";
+
+            ViewBag.Departments = context.Departments.OrderBy(d => d.DepartmentName).ToList();
+            var employee = context.Employees.Find(id);
+            return View(employee);
+        }
+        [HttpPost]
+        public IActionResult Edit(Employee employee)
+        {
+            if (ModelState.IsValid)
+            {
+                if (employee.Id == 0)
+                {
+                    context.Employees.Add(employee);
+                }
+                else
+                {
+                    context.Employees.Update(employee);
+                }
+                context.SaveChanges();
+                return RedirectToAction("Index", "Employee");
+            }
+            else
+            {
+                ViewBag.Departments = context.Departments.OrderBy(d => d.DepartmentName).ToList();
+
+                ViewBag.Action = (employee.Id == 0) ? "Add" : "Edit";
+                return View(employee);
+            }
+
+        }
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+
+            ViewBag.Action = "Delete";
+            var employee = context.Employees.Find(id);
+            return View(employee);
+        }
+        [HttpPost]
+        public IActionResult Delete(Employee employee)
+        {
+
+            ViewBag.Action = "Delete";
+            context.Employees.Remove(employee);
+            context.SaveChanges();
+            return RedirectToAction("Index", "Employee");
+
         }
     }
 }

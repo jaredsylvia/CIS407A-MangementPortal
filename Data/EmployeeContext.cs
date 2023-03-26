@@ -6,8 +6,9 @@ namespace ManagementPortal.Data
     {
         public EmployeeContext(DbContextOptions<EmployeeContext> options) : base(options)
         { }
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<Department> Departments { get; set; }
+        public DbSet<Employee> Employees { get; set; } // Employee context entity
+        public DbSet<Department> Departments { get; set; } // Departmetn context entity
+        public DbSet<Product> Products { get; set; } // Product context entity
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();
@@ -60,7 +61,34 @@ namespace ManagementPortal.Data
                     DepartmentId = "SA"
                 }
                 );
-            
+            //Pre-populate some products
+            modelBuilder.Entity<Product>().HasData(
+            new Product
+            {
+                Id = 1,
+                Name = "LightSaber",
+                Description = "Laser sword useful for cutting objects",
+                Inventory = 42,
+                Price = 29.99M
+            },
+            new Product
+            {
+                Id = 2,
+                Name = "Blaster",
+                Description = "Terribly inaccurate if wearing white plastic armor",
+                Inventory = 140,
+                Price = 19.99M
+            },
+            new Product
+            {
+                Id = 3,
+                Name = "Retro-looking Blaster",
+                Description = "Accurate if you look like Indiana Jones or a huge bear dog.",
+                Inventory = 2,
+                Price = 129.99M
+            }
+            );
+
         }
     }
 }
