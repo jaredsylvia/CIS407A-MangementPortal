@@ -4,7 +4,14 @@
 }
 
 <h2>Employee List</h2>
-<a asp-controller="Employee" asp-action="Add">Add New Employee</a>
+<a asp-controller="Employee" asp-action="Add"><span class="fa fa-male"></span>&nbsp;Add New Employee</a>
+<form asp-controller="Employee" asp-action="Index">
+    <p>
+        Name: <input type="text" name="SearchString" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
 <table class="table table-bordered table-striped" id="empTable">
     <thead>
         <tr>
@@ -25,9 +32,9 @@
             <td id="@emp.Id">@emp.Id</td>
             <td>@emp.Name</td>
             <td>@emp.Title</td>
-            <td>@emp.StartDate.ToString()</td>
+            <td>@emp.StartDate.ToString("MM/dd/yyyy")</td>
             <td>@emp.PayRate</td>
-            <td>@emp.Hours</td>
+            <td>@emp.HoursString</td>
             <td>@emp.DepartmentId</td>
             <td>@emp.Department.DepartmentName</td>
             <td>

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ManagementPortal.Models;
 using ManagementPortal.Data;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace ManagementPortal.Controllers
 {
@@ -13,7 +13,7 @@ namespace ManagementPortal.Controllers
         {
             context = ctx;
         }
-        public IActionResult Index()
+        /* public IActionResult Index()
         {
             var departments = context.Departments.ToList(); 
             foreach (var emp in context.Employees.ToList()) // This is the worst possible way to do this I think, but the emp objects don't seem to have the department objects they should
@@ -24,6 +24,23 @@ namespace ManagementPortal.Controllers
             var employees = context.Employees.ToList();
             
             return View(employees);
+        } */
+
+        public IActionResult Index(string searchString)
+        {
+            var departments = context.Departments.ToList();
+            foreach (var emp in context.Employees.ToList()) 
+            {
+                var dept = departments.Find(x => x.DepartmentId.Equals(emp.DepartmentId));
+                emp.Department = dept;
+            }
+
+            var employees = from e in context.Employees select e;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                employees = employees.Where(s => s.Name.Contains(searchString));
+            }
+            return View(employees.ToList());
         }
 
         [HttpGet]

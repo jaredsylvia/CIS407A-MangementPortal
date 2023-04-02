@@ -28,7 +28,7 @@ namespace ManagementPortal.Data
                );
 
             //_ = modelBuilder.Ignore<Department>();     .OwnsOne(e => e.Department)
-            
+
             modelBuilder.Entity<Employee>().HasData(
                 new Employee
                 {
@@ -37,7 +37,7 @@ namespace ManagementPortal.Data
                     StartDate = new DateTime(2010, 6, 15),
                     Title = "Human Resources Manager",
                     PayRate = 30,
-                    Hours = "25:15",
+                    Hours = new TimeSpan(25, 0, 0),
                     DepartmentId = "AD"
                 },
                 new Employee
@@ -47,7 +47,7 @@ namespace ManagementPortal.Data
                     StartDate = new DateTime(2007, 12, 17),
                     Title = "Junior Accountant",
                     PayRate = 18,
-                    Hours = "40",
+                    Hours = new TimeSpan(40, 0, 0),
                     DepartmentId = "AC"
                 },
                 new Employee
@@ -57,10 +57,10 @@ namespace ManagementPortal.Data
                     StartDate = new DateTime(2018, 9, 20),
                     Title = "Sales Associate",
                     PayRate = 22,
-                    Hours = "45:35",
+                    Hours = new TimeSpan(45, 35, 0),
                     DepartmentId = "SA"
                 }
-                );
+                ) ;
             //Pre-populate some products
             modelBuilder.Entity<Product>().HasData(
             new Product

@@ -20,9 +20,10 @@ namespace ManagementPortal.Models
         private DateTime startDate;
         private string title;
         private decimal payRate;
-        private string hours;
+        private TimeSpan hours;
         private string deptId;
         private Department department;
+        
 
 
         //constructors
@@ -32,8 +33,8 @@ namespace ManagementPortal.Models
             name = "John Doe";
             startDate = DateTime.Now;
             title = "Junior Employee";
-            payRate = 15.00m; 
-            hours = "40:00";
+            payRate = 15.00m;
+            hours = new TimeSpan(40, 0, 0);
             deptId = "00";
             department = new Department();
 
@@ -46,46 +47,55 @@ namespace ManagementPortal.Models
             this.startDate = startDate;
             this.title = title;
             this.payRate = payRate;
-            if (hours.Contains('.')) //RegEx comparison should replace this, is used in setter also - should be refactored
-            {
-                float hoursFloat = float.Parse(hours, System.Globalization.CultureInfo.InvariantCulture);
-                TimeSpan hTimeSpan = TimeSpan.FromHours(hoursFloat);
-                this.hours = hTimeSpan.ToString("hh':'mm");
-            } else
-            {
-                this.hours = hours;
-            }
+            this.hours = CalculateHours(hours);
             this.deptId = deptId;
             this.department = department;
         }
 
         //behaviors
 
+        public TimeSpan CalculateHours(dynamic hours)
+        {
+            try
+            {
+                if (hours is string)
+                {
+                    if (hours.Contains(":"))
+                    {
+                        Hours = TimeSpan.Parse(hours);
+                    }
+                    else
+                    {
+                        Hours = TimeSpan.FromHours(double.Parse(hours));
+                    }
+                }
+                else if (hours is float)
+                {
+                    Hours = TimeSpan.FromHours(hours);
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid input type. Hours must be a string or a float.");
+                }
+
+                return Hours;
+            }
+            catch (FormatException)
+            {
+                throw new ArgumentException("Invalid time format. Time must be in the format hh:mm.");
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Error setting hours.", ex);
+            }
+        }
+
         public decimal CalculatePay()
         {
-            string[] h;
-            decimal decHours; //decHours should be refactored and return a decimal of hours worked.
-            try
-            {
-                h = this.hours.Split(new string[] { ":" }, StringSplitOptions.None);
-                
-            }
-            catch (NullReferenceException)
-            {
-                h = new string[] { "0", "0" }; 
-            }
-            try
-            {
-                decHours = Math.Round(Convert.ToDecimal(h[0]) + (Convert.ToDecimal(h[1]) / 60), 2);
-                
-            }
-            catch (IndexOutOfRangeException)
-            {
-                decHours = Math.Round(Convert.ToDecimal(h[0]));
-                
-            }
-            return this.payRate * decHours;
+            return PayRate * (decimal)this.hours.TotalHours;
         }
+
+
 
         public override string ToString()
         {
@@ -99,27 +109,41 @@ namespace ManagementPortal.Models
         //getters and setters
         [Key]
         public int Id { get { return id; } set { id = value; } }
+
+        [Required(ErrorMessage = "Please enter a name.")]
+        [StringLength(50, ErrorMessage = "Name must be 50 characters or less.")]
         public string Name { get { return name; } set { name = value; } }
+
+        [Required(ErrorMessage = "Please enter the Start Date.")]
+        [Range(typeof(DateTime), "1/1/1900", "12/31/9999", ErrorMessage = "Start Date must be after 1/1/1900.")]
         public DateTime StartDate { get { return startDate; } set { startDate = value; } }
+        
+        [Required(ErrorMessage = "Please enter a title.")]
+        [StringLength(30, ErrorMessage = "Title must be 30 characters or less.")]
         public string Title { get { return title; } set { title = value; } }
+
+        [Required(ErrorMessage = "Please enter a Pay Rate.")]
+        [DataType(DataType.Currency)]
+        [Range(0, 100, ErrorMessage = "Please enter the Pay Rate between 0 and 100")]
         public decimal PayRate { get { return payRate; } set { payRate = value; } }
-        public string Hours { 
+
+        [Required(ErrorMessage = "Hours worked is required.")]
+        [NotMapped]
+        public TimeSpan Hours { 
             get { return hours; } 
-            set
-            { //RegEx comparison should replace this, is used in constructor also - should be refactored
-                if (value.Contains('.'))
-                {
-                    float hoursFloat = float.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
-                    TimeSpan hTimeSpan = TimeSpan.FromHours(hoursFloat);
-                    hours = hTimeSpan.ToString("hh':'mm");
-                }
-                else
-                {
-                    hours = value;
-                }
-            } 
+            set { hours = value; }
         }
 
+        [NotMapped]
+        public string HoursString => $"{Hours.TotalHours + (Hours.Days * 24):00}:{Hours.Minutes:00}";
+
+        public long MillisWorked
+        {
+            get { return (long)Hours.TotalMilliseconds; }
+            set { Hours = TimeSpan.FromMilliseconds(value); }
+        }
+
+        [Required(ErrorMessage = "Please enter the Department.")]
         [ForeignKey("Department")]
         public string DepartmentId { get { return deptId; } set { deptId = value; } }  //foreign key
         [NotMapped]
