@@ -102,7 +102,8 @@ namespace ManagementPortal.Models
             return String.Format("Id: {0}\nName: {1}\nStartDate: {2}\nTitle: {3}\nPayRate: {4}\n Hours: {5}",
                 id, name, startDate, title, payRate, hours);
         }
-
+        
+        public string HoursString => $"{Hours.TotalHours + (Hours.Days * 24):00}:{Hours.Minutes:00}";
 
 
 
@@ -133,9 +134,7 @@ namespace ManagementPortal.Models
             get { return hours; } 
             set { hours = value; }
         }
-
-        [NotMapped]
-        public string HoursString => $"{Hours.TotalHours + (Hours.Days * 24):00}:{Hours.Minutes:00}";
+               
 
         public long MillisWorked
         {
