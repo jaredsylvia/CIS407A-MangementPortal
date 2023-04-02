@@ -96,6 +96,7 @@ namespace ManagementPortal.Models
         }
 
 
+        public string HoursString => $"{Hours.TotalHours + (Hours.Days * 24):00}:{Hours.Minutes:00}";
 
         public override string ToString()
         {
@@ -103,7 +104,7 @@ namespace ManagementPortal.Models
                 id, name, startDate, title, payRate, hours);
         }
         
-        public string HoursString => $"{Hours.TotalHours + (Hours.Days * 24):00}:{Hours.Minutes:00}";
+        
 
 
 
