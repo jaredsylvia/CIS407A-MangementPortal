@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ManagementPortal.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
 namespace ManagementPortal.Data
 {
-    public class EmployeeContext : DbContext
+    public class EmployeeContext : IdentityDbContext<User>
     {
         public EmployeeContext(DbContextOptions<EmployeeContext> options) : base(options)
         { }

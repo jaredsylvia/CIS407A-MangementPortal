@@ -2,6 +2,7 @@
 using ManagementPortal.Models;
 using ManagementPortal.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ManagementPortal.Controllers
 {
@@ -70,6 +71,7 @@ namespace ManagementPortal.Controllers
             return View(model);
         }
 
+        [Authorize]
         public IActionResult Add()
         {
             ViewBag.Action = "Add";
@@ -78,6 +80,7 @@ namespace ManagementPortal.Controllers
             return View("Edit", new Employee());
         }
         [HttpGet]
+        [Authorize]
         public IActionResult Edit(int id)
         {
             ViewBag.Action = "Edit";
@@ -87,6 +90,7 @@ namespace ManagementPortal.Controllers
             return View(employee);
         }
         [HttpPost]
+        [Authorize]
         public IActionResult Edit(Employee employee)
         {
             if (ModelState.IsValid)
@@ -112,6 +116,7 @@ namespace ManagementPortal.Controllers
 
         }
         [HttpGet]
+        [Authorize]
         public IActionResult Delete(int id)
         {
 
@@ -120,6 +125,7 @@ namespace ManagementPortal.Controllers
             return View(employee);
         }
         [HttpPost]
+        [Authorize]
         public IActionResult Delete(Employee employee)
         {
 
@@ -129,5 +135,7 @@ namespace ManagementPortal.Controllers
             return RedirectToAction("Index", "Employee");
 
         }
+
+
     }
 }
